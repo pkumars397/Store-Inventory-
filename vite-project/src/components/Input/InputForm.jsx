@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DisplayContent from "../UI/DisplayContent";
 
 export default function InputForm() {
@@ -9,7 +9,53 @@ export default function InputForm() {
 
   const [SkinCareArr, setSkinCareArr] = useState([]);
   const [FoodArr, setFoodArr] = useState([]);
-  const [ElectronicsArr, setElectroncsArr] = useState([]);
+  const [ElectronicsArr, setElectronicsArr] = useState([]);
+
+  useEffect(() => {
+    if (Object.keys(localStorage).length) {
+      const values = Object.values(localStorage);
+      for (let val of values) {
+        val = JSON.parse(val);
+        if (val.category == "SkinCare") {
+          setSkinCareArr((prevState) => {
+            return [
+              ...prevState,
+              {
+                id: val.id,
+                price: val.price,
+                name: val.name,
+                category: val.category,
+              },
+            ];
+          });
+        } else if (val.category == "Food") {
+          FoodArr((prevState) => {
+            return [
+              ...prevState,
+              {
+                id: val.id,
+                price: val.price,
+                name: val.name,
+                category: val.category,
+              },
+            ];
+          });
+        } else if (val.category == "Electronics") {
+          setElectronicsArr((prevState) => {
+            return [
+              ...prevState,
+              {
+                id: val.id,
+                price: val.price,
+                name: val.name,
+                category: val.category,
+              },
+            ];
+          });
+        }
+      }
+    }
+  }, []);
 
   const prodIdHandler = (event) => {
     setProdId(() => {
@@ -84,7 +130,7 @@ export default function InputForm() {
     setProdCategory("");
   };
 
-  console.log(prodId, prodPrice, prodName, prodCategory);
+  // console.log(prodId, prodPrice, prodName, prodCategory);
   return (
     <>
       <form onSubmit={formSubmitHandler}>
