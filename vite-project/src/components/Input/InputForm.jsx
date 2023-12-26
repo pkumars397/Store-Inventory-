@@ -1,61 +1,11 @@
 import { useEffect, useState } from "react";
 import DisplayContent from "../UI/DisplayContent";
 
-export default function InputForm() {
+export default function InputForm(props) {
   const [prodId, setProdId] = useState("");
   const [prodPrice, setProdPrice] = useState();
   const [prodName, setProdName] = useState("");
   const [prodCategory, setProdCategory] = useState("");
-
-  const [SkinCareArr, setSkinCareArr] = useState([]);
-  const [FoodArr, setFoodArr] = useState([]);
-  const [ElectronicsArr, setElectronicsArr] = useState([]);
-
-  useEffect(() => {
-    if (Object.keys(localStorage).length) {
-      const values = Object.values(localStorage);
-      for (let val of values) {
-        val = JSON.parse(val);
-        if (val.category == "SkinCare") {
-          setSkinCareArr((prevState) => {
-            return [
-              ...prevState,
-              {
-                id: val.id,
-                price: val.price,
-                name: val.name,
-                category: val.category,
-              },
-            ];
-          });
-        } else if (val.category == "Food") {
-          FoodArr((prevState) => {
-            return [
-              ...prevState,
-              {
-                id: val.id,
-                price: val.price,
-                name: val.name,
-                category: val.category,
-              },
-            ];
-          });
-        } else if (val.category == "Electronics") {
-          setElectronicsArr((prevState) => {
-            return [
-              ...prevState,
-              {
-                id: val.id,
-                price: val.price,
-                name: val.name,
-                category: val.category,
-              },
-            ];
-          });
-        }
-      }
-    }
-  }, []);
 
   const prodIdHandler = (event) => {
     setProdId(() => {
@@ -86,44 +36,8 @@ export default function InputForm() {
     };
     const stringfyObj = JSON.stringify(details);
     localStorage.setItem(prodId, stringfyObj);
-    if (prodCategory == "SkinCare") {
-      setSkinCareArr((prevState) => {
-        return [
-          ...prevState,
-          {
-            id: prodId,
-            price: prodPrice,
-            name: prodName,
-            category: prodCategory,
-          },
-        ];
-      });
-    } else if (prodCategory == "Food") {
-      setFoodArr((prevState) => {
-        return [
-          ...prevState,
-          {
-            id: prodId,
-            price: prodPrice,
-            name: prodName,
-            category: prodCategory,
-          },
-        ];
-      });
-    } else {
-      setElectroncsArr((prevState) => {
-        return [
-          ...prevState,
-          {
-            id: prodId,
-            price: prodPrice,
-            name: prodName,
-            category: prodCategory,
-          },
-        ];
-      });
-    }
 
+    props.onAddProducts(prodId, prodName, prodPrice, prodCategory);
     setProdId("");
     setProdPrice("");
     setProdName("");
@@ -149,11 +63,6 @@ export default function InputForm() {
         </select>
         <input type="submit" value="Add Product" />
       </form>
-      <DisplayContent
-        SkinCareArr={SkinCareArr}
-        FoodArr={FoodArr}
-        ElectronicsArr={ElectronicsArr}
-      ></DisplayContent>
     </>
   );
 }
